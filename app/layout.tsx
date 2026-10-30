@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 import TanStackProvider from '../components/TanStackProvider/TanStackProvider';
+import AuthProvider from '../components/AuthProvider/AuthProvider';
 import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
 import './globals.css';
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
     url: 'https://notehub.com',
     images: [
       {
-        url: 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg',
+        url: 'https://goit.global',
         width: 1200,
         height: 630,
         alt: 'NoteHub Banner',
@@ -38,15 +39,17 @@ interface RootLayoutProps {
 export default function RootLayout({ children, modal }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
-      {}
       <body className={roboto.className} suppressHydrationWarning>
         <TanStackProvider>
-          <Header />
-          <div id="root-layout">
-            {children}
-            {modal}
-          </div>
-          <Footer />
+          <AuthProvider>
+            <Header />
+            <div id="root-layout">
+              {}
+              {children}
+              {modal}
+            </div>
+            <Footer />
+          </AuthProvider>
         </TanStackProvider>
       </body>
     </html>
