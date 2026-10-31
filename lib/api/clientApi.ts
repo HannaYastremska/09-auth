@@ -50,8 +50,8 @@ export const createNote = async (note: CreateNoteInput): Promise<Note> => {
   return response.data;
 };
 
-export const deleteNote = async (id: string): Promise<{ success: boolean }> => {
-  const response = await notehubApi.delete<{ success: boolean }>(`/notes/${id}`);
+export const deleteNote = async (id: string): Promise<Note> => {
+  const response = await notehubApi.delete<Note>(`/notes/${id}`);
   return response.data;
 };
 
