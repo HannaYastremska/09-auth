@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { api } from '../../api';
 import { cookies } from 'next/headers';
+import { parseSetCookie } from 'cookie';
 import { isAxiosError } from 'axios';
+import { api } from '../../api';
 import { logErrorResponse } from '../../_utils/utils';
 
 export async function POST(req: NextRequest) {
@@ -14,35 +15,18 @@ export async function POST(req: NextRequest) {
 
     if (setCookie) {
       const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
-
       for (const cookieStr of cookieArray) {
-        const parts = cookieStr.split(';').map(p => p.trim());
-        const nameValue = parts[0];
-        if (!nameValue) continue;
+        const parsed = parseSetCookie(cookieStr);
 
-        const equalsIndex = nameValue.indexOf('=');
-        if (equalsIndex === -1) continue;
-
-        const name = nameValue.substring(0, equalsIndex).trim();
-        const value = nameValue.substring(equalsIndex + 1).trim();
-
-        const options: any = {
-          path: '/',
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'lax',
-        };
-
-        if (name && value) {
-          cookieStore.set(name, value, options);
+        if (parsed.value) {
+          cookieStore.set(parsed.name, parsed.value, parsed as any);
         }
       }
 
       return NextResponse.json(apiRes.data, { status: apiRes.status });
     }
 
-    cookieStore.set('session', 'true', { path: '/', httpOnly: true, maxAge: 60 * 60 * 24 });
-    return NextResponse.json(apiRes.data, { status: apiRes.status });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   } catch (error) {
     if (isAxiosError(error)) {
       logErrorResponse(error.response?.data);

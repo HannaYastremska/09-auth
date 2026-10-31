@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { logout } from '../../lib/api/clientApi';
 import { useAuthStore } from '../../lib/store/authStore';
 
@@ -28,10 +29,10 @@ export default function AuthNavigation() {
     return (
       <>
         <li>
-          <a href="/sign-in">Login</a>
+          <Link href="/sign-in">Login</Link>
         </li>
         <li>
-          <a href="/sign-up">Sign up</a>
+          <Link href="/sign-up">Sign up</Link>
         </li>
       </>
     );
@@ -42,10 +43,10 @@ export default function AuthNavigation() {
       {isAuthenticated ? (
         <>
           <li>
-            <a href="/notes/filter/all">Notes</a>
+            <Link href="/notes/filter/all">Notes</Link>
           </li>
           <li>
-            <a href="/profile">Profile</a>
+            <Link href="/profile">Profile</Link>
           </li>
           <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span style={{ fontSize: '0.9rem', color: '#ccc' }}>{user?.email}</span>
@@ -67,10 +68,10 @@ export default function AuthNavigation() {
       ) : (
         <>
           <li>
-            <a href="/sign-in">Login</a>
+            <Link href="/sign-in">Login</Link>
           </li>
           <li>
-            <a href="/sign-up">Sign up</a>
+            <Link href="/sign-up">Sign up</Link>
           </li>
         </>
       )}

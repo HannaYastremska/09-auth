@@ -1,8 +1,35 @@
 import { notehubApi } from './api';
+import { Note } from '../../types/note';
+import { User } from '../../types/user';
 
-export const fetchNotes = async (page: number, search: string, tag?: string) => {
+export interface NoteResponse {
+  notes: Note[];
+  totalPages: number;
+  currentPage: number;
+}
+
+export interface CreateNoteInput {
+  title: string;
+  content: string;
+  tag: string;
+}
+
+export interface UpdateUserInput {
+  username: string;
+}
+
+export interface AuthCredentials {
+  email: string;
+  password: string;
+}
+
+export const fetchNotes = async (
+  page: number,
+  search: string,
+  tag?: string
+): Promise<NoteResponse> => {
   const appliedTag = tag && tag !== 'all' ? tag : undefined;
-  const response = await notehubApi.get('/notes', {
+  const response = await notehubApi.get<NoteResponse>('/notes', {
     params: {
       page,
       perPage: 12,
@@ -13,47 +40,47 @@ export const fetchNotes = async (page: number, search: string, tag?: string) => 
   return response.data;
 };
 
-export const fetchNoteById = async (id: string) => {
-  const response = await notehubApi.get(`/notes/${id}`);
+export const fetchNoteById = async (id: string): Promise<Note> => {
+  const response = await notehubApi.get<Note>(`/notes/${id}`);
   return response.data;
 };
 
-export const createNote = async (note: { title: string; content: string; tag: string }) => {
-  const response = await notehubApi.post('/notes', note);
+export const createNote = async (note: CreateNoteInput): Promise<Note> => {
+  const response = await notehubApi.post<Note>('/notes', note);
   return response.data;
 };
 
-export const deleteNote = async (id: string) => {
-  const response = await notehubApi.delete(`/notes/${id}`);
+export const deleteNote = async (id: string): Promise<{ success: boolean }> => {
+  const response = await notehubApi.delete<{ success: boolean }>(`/notes/${id}`);
   return response.data;
 };
 
-export const register = async (userData: any) => {
-  const response = await notehubApi.post('/auth/register', userData);
+export const register = async (userData: AuthCredentials): Promise<User> => {
+  const response = await notehubApi.post<User>('/auth/register', userData);
   return response.data;
 };
 
-export const login = async (credentials: any) => {
-  const response = await notehubApi.post('/auth/login', credentials);
+export const login = async (credentials: AuthCredentials): Promise<User> => {
+  const response = await notehubApi.post<User>('/auth/login', credentials);
   return response.data;
 };
 
-export const logout = async () => {
-  const response = await notehubApi.post('/auth/logout');
+export const logout = async (): Promise<{ success: boolean }> => {
+  const response = await notehubApi.post<{ success: boolean }>('/auth/logout');
   return response.data;
 };
 
-export const checkSession = async () => {
-  const response = await notehubApi.get('/auth/session');
+export const checkSession = async (): Promise<User> => {
+  const response = await notehubApi.get<User>('/auth/session');
   return response.data;
 };
 
-export const getMe = async () => {
-  const response = await notehubApi.get('/users/me');
+export const getMe = async (): Promise<User> => {
+  const response = await notehubApi.get<User>('/users/me');
   return response.data;
 };
 
-export const updateMe = async (userData: { username: string }) => {
-  const response = await notehubApi.patch('/users/me', userData);
+export const updateMe = async (userData: UpdateUserInput): Promise<User> => {
+  const response = await notehubApi.patch<User>('/users/me', userData);
   return response.data;
 };
